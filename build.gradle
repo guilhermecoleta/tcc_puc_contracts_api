@@ -54,7 +54,7 @@ task migrateLocal(type: FlywayMigrateTask) {
 }
 
 task migrateProd(type: FlywayMigrateTask) {
-	url = 'jdbc:postgresql://ec2-3-211-245-154.compute-1.amazonaws.com:5432/d4hbek2q5g902q?sslmode=require&user=erbrapclajlnhu&password=c5b8d8203c3b7c8ee7dcc5f5de3035c967d094a1f9ca033f5dac733977bfb98a'
+	url = 'jdbc:postgresql://ec2-18-211-97-89.compute-1.amazonaws.com:5432/d8q0o5fiv0e4f6?sslmode=require&user=wutaqzfnqsaomd&password=a143f3196df8089ba58e71a76674887cac9948f0f3c903d546a901a03f22e852'
 	schemas = ['public']
 	locations = ['classpath:db/migration']
 }
