@@ -5,11 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import puc.tcc.contracts.api.persistence.domain.DocumentEntity;
+import puc.tcc.contracts.api.persistence.domain.ContractEntity;
 
 @Repository
-public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> {
+public interface ContractRepository extends JpaRepository<ContractEntity, Long> {
 
-    @Query("FROM DocumentEntity d")
-    Page<DocumentEntity> search(Pageable pageable);
+    @Query("FROM ContractEntity d")
+    Page<ContractEntity> search(Pageable pageable);
 }
