@@ -11,16 +11,20 @@ import puc.tcc.contracts.api.SampleBaseTestCase;
 import puc.tcc.contracts.api.exception.ContractsApiException;
 import puc.tcc.contracts.api.mapper.ContractMapper;
 import puc.tcc.contracts.api.persistence.domain.ContractEntity;
+import puc.tcc.contracts.api.persistence.domain.SupplierEntity;
 import puc.tcc.contracts.api.persistence.repositories.ContractRepository;
+import puc.tcc.contracts.api.persistence.repositories.SupplierRepository;
 import puc.tcc.contracts.api.resources.contract.ContractRequest;
 import puc.tcc.contracts.api.resources.contract.ContractResponse;
 import puc.tcc.contracts.api.services.impl.ContractServiceImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,12 +38,16 @@ class ContractServiceTest extends SampleBaseTestCase {
     private ContractRepository contractRepository;
 
     @InjectMocks
-    private ContractService contractService = new ContractServiceImpl();
+    private final ContractService contractService = new ContractServiceImpl();
+
+    @Mock
+    private SupplierRepository supplierRepository;
 
     @Test
     @DisplayName("Salvar contrato com sucesso")
     void save() throws ContractsApiException {
         when(contractMapper.toModel(any())).thenReturn(getContractSaveEntity());
+        when(supplierRepository.findById(anyLong())).thenReturn(getSupplier());
 
         contractService.saveOrUpdate(getContractSaveRequest());
         ArgumentCaptor<ContractEntity> captor = ArgumentCaptor.forClass(ContractEntity.class);
@@ -56,6 +64,7 @@ class ContractServiceTest extends SampleBaseTestCase {
                 .datEnd(LocalDate.of(2021, 4, 30))
                 .description("description")
                 .value(BigDecimal.valueOf(100))
+                .supplier(SupplierEntity.builder().id(1L).build())
                 .build();
     }
 
@@ -66,6 +75,7 @@ class ContractServiceTest extends SampleBaseTestCase {
                 .datEnd(LocalDate.of(2021, 4, 30))
                 .description("description")
                 .value(BigDecimal.valueOf(100))
+                .supplierId(1L)
                 .build();
     }
 
@@ -82,7 +92,7 @@ class ContractServiceTest extends SampleBaseTestCase {
     @DisplayName("Atualizar contrato com sucesso")
     void update() throws ContractsApiException {
         when(contractMapper.toModel(any())).thenReturn(getContractUpdateEntity());
-        when(contractMapper.toResponse(any())).thenReturn(getContractUpdateResponse());
+        when(supplierRepository.findById(anyLong())).thenReturn(getSupplier());
 
         contractService.saveOrUpdate(getContractUpdateRequest());
         ArgumentCaptor<ContractEntity> captor = ArgumentCaptor.forClass(ContractEntity.class);
@@ -100,17 +110,7 @@ class ContractServiceTest extends SampleBaseTestCase {
                 .datEnd(LocalDate.of(2021, 4, 29))
                 .description("description 2")
                 .value(BigDecimal.valueOf(100))
-                .build();
-    }
-
-    private ContractResponse getContractUpdateResponse(){
-        return ContractResponse.builder()
-                .id(1L)
-                .title("Title")
-                .datStart("10/04/2021")
-                .datEnd("29/04/2021")
-                .description("description")
-                .value(BigDecimal.valueOf(100))
+                .supplier(SupplierEntity.builder().id(1L).build())
                 .build();
     }
 
@@ -122,6 +122,7 @@ class ContractServiceTest extends SampleBaseTestCase {
                 .datEnd(LocalDate.of(2021, 4, 29))
                 .description("description 2")
                 .value(BigDecimal.valueOf(100))
+                .supplierId(1L)
                 .build();
     }
 
@@ -130,6 +131,25 @@ class ContractServiceTest extends SampleBaseTestCase {
         assertSaveContract(expected, actual);
     }
 
+
+    @Test
+    @DisplayName("Fornecedor não existe")
+    void saveWithoutSupplier(){
+        when(contractMapper.toModel(any())).thenReturn(getContractSaveEntity());
+        when(supplierRepository.findById(anyLong())).thenReturn(Optional.empty());
+        Exception exception = assertThrows(ContractsApiException.class, () -> {
+            contractService.saveOrUpdate(getContractSaveRequest());
+        });
+
+        String expectedMessage = "Fornecedor não existe";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    private Optional<SupplierEntity> getSupplier() {
+        return Optional.of(SupplierEntity.builder().id(1L).build());
+    }
 
 
 }

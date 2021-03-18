@@ -31,4 +31,7 @@ public class ContractRequest {
     @Length(max = 1000, message = "O campo deve ter no máximo 500 caracteres")
     @NotBlank(message = "O campo descricao deve ser preenchido")
     private String description;
+    @NotNull(message = "O campo supplier_id deve ser preenchido")
+    @JsonProperty("supplier_id")
+    private Long supplierId;
 }

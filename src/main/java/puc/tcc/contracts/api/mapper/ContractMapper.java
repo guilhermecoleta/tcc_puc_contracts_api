@@ -17,7 +17,8 @@ public interface ContractMapper {
             @Mapping(source = "request.datStart", target = "datStart"),
             @Mapping(source = "request.datEnd", target = "datEnd"),
             @Mapping(source = "request.description", target = "description"),
-            @Mapping(source = "request.value", target = "value")
+            @Mapping(source = "request.value", target = "value"),
+            @Mapping(source = "request.supplierId", target = "supplier.id")
     })
     ContractEntity toModel(ContractRequest request);
 
@@ -27,7 +28,12 @@ public interface ContractMapper {
             @Mapping(source = "entity.datStart", target = "datStart", dateFormat = "dd/MM/yyyy"),
             @Mapping(source = "entity.datEnd", target = "datEnd", dateFormat = "dd/MM/yyyy"),
             @Mapping(source = "entity.description", target = "description"),
-            @Mapping(source = "entity.value", target = "value")
+            @Mapping(source = "entity.value", target = "value"),
+            @Mapping(source = "entity.supplier.id", target = "supplier.id"),
+            @Mapping(source = "entity.supplier.cnpj", target = "supplier.cnpj"),
+            @Mapping(source = "entity.supplier.name", target = "supplier.name"),
+            @Mapping(source = "entity.supplier.phone", target = "supplier.phone"),
+            @Mapping(source = "entity.supplier.email", target = "supplier.email")
     })
     ContractResponse toResponse(ContractEntity entity);
 

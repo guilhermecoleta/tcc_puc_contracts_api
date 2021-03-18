@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import puc.tcc.contracts.api.resources.supplier.SupplierResponse;
 
 import java.math.BigDecimal;
 
@@ -21,4 +22,5 @@ public class ContractResponse {
     private String datEnd;
     private BigDecimal value;
     private String description;
+    private SupplierResponse supplier;
 }

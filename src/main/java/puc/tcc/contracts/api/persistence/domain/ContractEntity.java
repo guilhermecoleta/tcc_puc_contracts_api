@@ -6,8 +6,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "contract")
@@ -33,5 +31,7 @@ public class ContractEntity implements Serializable {
     @Column(name = "contract_value")
     private BigDecimal value;
     private String description;
-
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private SupplierEntity supplier;
 }

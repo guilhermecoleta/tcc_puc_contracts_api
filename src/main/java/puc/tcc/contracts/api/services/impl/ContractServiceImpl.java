@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import puc.tcc.contracts.api.exception.ContractsApiException;
 import puc.tcc.contracts.api.mapper.ContractMapper;
 import puc.tcc.contracts.api.persistence.domain.ContractEntity;
+import puc.tcc.contracts.api.persistence.domain.SupplierEntity;
 import puc.tcc.contracts.api.persistence.repositories.ContractRepository;
+import puc.tcc.contracts.api.persistence.repositories.SupplierRepository;
 import puc.tcc.contracts.api.resources.contract.ContractRequest;
 import puc.tcc.contracts.api.resources.contract.ContractResponse;
 import puc.tcc.contracts.api.services.ContractService;
@@ -29,10 +31,17 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     private ContractRepository contractRepository;
 
+    @Autowired
+    private SupplierRepository supplierRepository;
+
     @Override
     @Transactional
-    public ContractResponse saveOrUpdate(final ContractRequest contractRequest) {
+    public ContractResponse saveOrUpdate(final ContractRequest contractRequest) throws ContractsApiException {
         var model = contractMapper.toModel(contractRequest);
+        Optional<SupplierEntity> supplier = supplierRepository.findById(contractRequest.getSupplierId());
+        if(supplier.isEmpty()){
+            throw new ContractsApiException(HttpStatus.BAD_REQUEST, "supplier", "Fornecedor não existe");
+        }
         model = contractRepository.save(model);
         log.info("contract saved/updated contract={}", model);
         return contractMapper.toResponse(model);
@@ -68,4 +77,5 @@ public class ContractServiceImpl implements ContractService {
         }
         contractRepository.deleteById(id);
     }
+
 }
